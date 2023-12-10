@@ -1,7 +1,5 @@
 import unittest
 
-from msms_compression.compression_strategies import *
-
 mz_values = list(np.array([100.0, 100.0, 200.0, 300.0, 300.0], dtype=np.float32))
 intensity_values = list(np.array([50.0, 20.0, 30.0, 20.0, 50.0], dtype=np.float32))
 

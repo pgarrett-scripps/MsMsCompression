@@ -1,5 +1,3 @@
-Certainly! Here is a description for each of the compression strategies defined in your module:
-
 1. **`NoCompression`**: This strategy does not apply any compression to the data. It simply converts the input `mzs` and `intensities` lists into a string representation and returns it. Decompression converts this string back to the original lists.
 
 2. **`MzSingleStringDeltaCompressionIntensityHex`**: Applies delta encoding to the `mzs` list and hex encoding to the `intensities` list. This strategy is useful when there are small differences between consecutive `mz` values and the intensity values can be efficiently represented in hexadecimal format.
@@ -33,45 +31,43 @@ Certainly! Here is a description for each of the compression strategies defined 
 Each strategy has its unique approach to compressing and decompressing mass spectrometry data, balancing between compression ratio, data integrity, and URL compatibility. The choice of strategy depends on the specific requirements of your application, such as the need for precision, the nature of the data, and the context in which the compressed data will be used or transmitted.
 
 
-
-
 Results with Timstof Data:
 
-Compression ratios vs strategy:
-strategy
-NoCompression                                     1.000000
-RoundingCompression                               1.000000
-UrlRoundingCompression                            1.140632
-MzSingleStringDeltaCompressionIntensityHex        1.204477
-MzDoubleStringDeltaCompressionIntensityHex        1.216863
-MzIntensitySingleStringDeltaCompression           1.237656
-GzipCompressionBase64                             1.263460
-MzIntensityDoubleStringDeltaCompression           1.264349
-GzipCompression                                   1.348335
-GzipCompressionBase85                             1.348335
-MzIntensityDoubleStringDeltaCompressionGzipUrl    1.907631
-MzDoubleStringDeltaCompressionIntensityGzipUrl    1.968797
-MzIntensityDoubleStringDeltaCompressionGzipB85    2.036368
-MzDoubleStringDeltaCompressionGzipUrl             2.285203
-MzDoubleStringDeltaCompressionGzipB85             2.439701
-Name: compression_ratio, dtype: float64
+| Strategy                                       | Compression Ratio |
+| ---------------------------------------------- | ----------------: |
+| NoCompression                                  |           1.00000 |
+| RoundingCompression                            |           1.00000 |
+| UrlRoundingCompression                         |           1.13905 |
+| MzSingleStringDeltaCompressionIntensityHex     |           1.24833 |
+| MzDoubleStringDeltaCompressionIntensityHex     |           1.26319 |
+| MzIntensitySingleStringDeltaCompression        |           1.33905 |
+| MzIntensityDoubleStringDeltaCompression        |           1.37415 |
+| GzipCompressionBase64                          |           1.39496 |
+| GzipCompression                                |           1.48833 |
+| GzipCompressionBase85                          |           1.48833 |
+| MzIntensityDoubleStringDeltaCompressionGzipUrl |           2.10104 |
+| MzDoubleStringDeltaCompressionIntensityGzipUrl |           2.12393 |
+| MzIntensityDoubleStringDeltaCompressionGzipB85 |           2.24199 |
+| MzDoubleStringDeltaCompressionGzipUrl          |           2.45451 |
+| MzDoubleStringDeltaCompressionGzipB85          |           2.61932 |
 
-URL Compression ratios vs strategy:
-strategy
-NoCompression                                     1.000000
-RoundingCompression                               1.000000
-UrlRoundingCompression                            1.108852
-GzipCompression                                   1.157627
-GzipCompressionBase85                             1.157627
-GzipCompressionBase64                             1.488982
-MzSingleStringDeltaCompressionIntensityHex        1.496394
-MzDoubleStringDeltaCompressionIntensityHex        1.506623
-MzIntensitySingleStringDeltaCompression           1.532388
-MzIntensityDoubleStringDeltaCompression           1.554705
-MzIntensityDoubleStringDeltaCompressionGzipB85    1.733842
-MzDoubleStringDeltaCompressionGzipB85             2.072674
-MzIntensityDoubleStringDeltaCompressionGzipUrl    2.380744
-MzDoubleStringDeltaCompressionIntensityGzipUrl    2.414959
-MzDoubleStringDeltaCompressionGzipUrl             2.848811
-Name: url_compression_ratio, dtype: float64
+
+| Strategy                                       | URL Compression Ratio |
+| ---------------------------------------------- | --------------------: |
+| NoCompression                                  |               1.00000 |
+| RoundingCompression                            |               1.00000 |
+| UrlRoundingCompression                         |               1.10839 |
+| GzipCompression                                |               1.26904 |
+| GzipCompressionBase85                          |               1.26904 |
+| MzSingleStringDeltaCompressionIntensityHex     |               1.55040 |
+| MzDoubleStringDeltaCompressionIntensityHex     |               1.56627 |
+| GzipCompressionBase64                          |               1.63600 |
+| MzIntensitySingleStringDeltaCompression        |               1.66028 |
+| MzIntensityDoubleStringDeltaCompression        |               1.69812 |
+| MzIntensityDoubleStringDeltaCompressionGzipB85 |               1.90241 |
+| MzDoubleStringDeltaCompressionGzipB85          |               2.21372 |
+| MzIntensityDoubleStringDeltaCompressionGzipUrl |               2.61468 |
+| MzDoubleStringDeltaCompressionIntensityGzipUrl |               2.62149 |
+| MzDoubleStringDeltaCompressionGzipUrl          |               3.05311 |
+
 

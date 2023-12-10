@@ -2,8 +2,6 @@ import struct
 import urllib
 from typing import Generator, List
 
-import numpy as np
-
 
 # TODO: Improve compression of leading zeros str
 

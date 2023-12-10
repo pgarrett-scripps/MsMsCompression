@@ -2,8 +2,7 @@ import inspect
 
 import numpy as np
 
-import msms_compression
-from msms_compression.compression_strategies import *
+from src import msms_compression
 
 import urllib.parse
 

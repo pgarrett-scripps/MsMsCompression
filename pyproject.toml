@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools"]
+
+[project]
+name = "msms_compression"
+authors = [
+    {name = "Patrick Garrett", email = "pgarrett@scripps.edu"},
+]
+description = "A tool for compressing MS/MS data"
+readme = "README.md"
+requires-python = ">=3.8"
+dynamic = ["version"]
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+"numpy",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+version = {attr = "msms_compression.__version__"}
+
