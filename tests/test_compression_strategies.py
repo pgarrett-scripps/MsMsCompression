@@ -1,187 +1,37 @@
+import inspect
 import unittest
+import numpy as np
+
+import msms_compression
+from msms_compression.compression_strategies import BaseCompressionStrategy
 
 mz_values = list(np.array([100.0, 100.0, 200.0, 300.0, 300.0], dtype=np.float32))
 intensity_values = list(np.array([50.0, 20.0, 30.0, 20.0, 50.0], dtype=np.float32))
 
 
-class TestNoCompression(unittest.TestCase):
+class BaseTestCompressionStrategy(unittest.TestCase):
+    strategy_class = None
+
     def setUp(self):
-        self.strategy = NoCompression()
+        if self.strategy_class is not None:
+            print(f"Testing {self.strategy_class.__name__}")
+            self.strategy = self.strategy_class()
 
     def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzDeltaCompression(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzSingleStringDeltaCompressionIntensityHex()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
+        if self.strategy_class is not None:
+            compressed = self.strategy.compress(mz_values, intensity_values)
+            decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
+            self.assertEqual(mz_values, decompressed_mz)
+            self.assertEqual(intensity_values, decompressed_intensity)
 
 
-class TestMzDeltaCompression2(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzDoubleStringDeltaCompressionIntensityHex()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzDeltaCompression3(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzDoubleStringDeltaCompressionIntensityGzipUrl()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzDeltaCompression4(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzDoubleStringDeltaCompressionGzipUrl()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzDeltaCompression5(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzDoubleStringDeltaCompressionGzipB85()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzIntensityDeltaCompression(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzIntensitySingleStringDeltaCompression()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestGzipCompression(unittest.TestCase):
-    def setUp(self):
-        self.strategy = GzipCompression()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestRoundingCompression(unittest.TestCase):
-    def setUp(self):
-        self.strategy = RoundingCompression()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestUrlCompression(unittest.TestCase):
-    def setUp(self):
-        self.strategy = UrlRoundingCompression()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestGzipCompressionBase64(unittest.TestCase):
-    def setUp(self):
-        self.strategy = GzipCompressionBase64()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestGzipCompressionBase85(unittest.TestCase):
-    def setUp(self):
-        self.strategy = GzipCompressionBase85()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzIntensityDoubleStringDeltaCompression(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzIntensityDoubleStringDeltaCompression()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzIntensityDoubleStringDeltaCompressionGzipUrl(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzIntensityDoubleStringDeltaCompressionGzipUrl()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
-
-
-class TestMzIntensityDoubleStringDeltaCompressionGzipB85(unittest.TestCase):
-    def setUp(self):
-        self.strategy = MzIntensityDoubleStringDeltaCompressionGzipB85()
-
-    def test_compress_decompress(self):
-        compressed = self.strategy.compress(mz_values, intensity_values)
-        decompressed_mz, decompressed_intensity = self.strategy.decompress(compressed)
-
-        self.assertEqual(mz_values, decompressed_mz)
-        self.assertEqual(intensity_values, decompressed_intensity)
+# Dynamically create a test class for each strategy
+for name, cls in inspect.getmembers(msms_compression.compression_strategies, inspect.isclass):
+    if issubclass(cls, BaseCompressionStrategy) and cls is not BaseCompressionStrategy:
+        # Create a new test class for the strategy
+        new_class = type(f"Test{cls.__name__}", (BaseTestCompressionStrategy,), {"strategy_class": cls})
+        # Add the class to the current module's namespace
+        globals()[f"Test{cls.__name__}"] = new_class
 
 
 if __name__ == '__main__':
