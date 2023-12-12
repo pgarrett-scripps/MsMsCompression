@@ -1,7 +1,7 @@
 import base64
 import json
 from typing import List
-
+import lzstring
 import brotli
 import gzip
 
@@ -70,4 +70,16 @@ class SpectrumCompressorUrlGzip:
     def decompress(self, s: str) -> (List[float], List[float]):
         s = gzip.decompress(base64.urlsafe_b64decode(s))
         mzs, intensities = BaseCompressor().decompress(s.decode('utf-8'))
+        return mzs, intensities
+
+
+class SpectrumCompressorUrlLzstring:
+    def compress(self, mzs: List[float], intensities: List[float]) -> str:
+        s = BaseCompressor().compress(mzs, intensities)
+        compressed_data = lzstring.LZString().compressToEncodedURIComponent(s)
+        return compressed_data
+
+    def decompress(self, s: str) -> (List[float], List[float]):
+        s = lzstring.LZString().decompressFromEncodedURIComponent(s)
+        mzs, intensities = BaseCompressor().decompress(s)
         return mzs, intensities

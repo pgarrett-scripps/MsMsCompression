@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3]
+
+### Added
+- lzstring url compressor for better compatibility with js
+
 ## [0.1.2]
 
 ### Added

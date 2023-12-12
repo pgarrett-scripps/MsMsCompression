@@ -18,7 +18,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-"brotli"
+"brotli", "lzstring"
 ]
 
 [tool.setuptools]
