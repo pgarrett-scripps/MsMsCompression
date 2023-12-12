@@ -39,6 +39,7 @@ def test_compression(strategy, mz_values, intensity_values):
     print(f"URL Encoded Size: {url_encoded_size} bytes")
     print(f"Compression Ratio: {compression_ratio:.2f}")
     print(f"URL Compression Ratio: {url_compression_ratio:.2f}")
+    print(f"compressed spectrum: {compressed}")
     print()
 
 
