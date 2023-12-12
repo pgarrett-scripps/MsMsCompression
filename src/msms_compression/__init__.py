@@ -1,4 +1,4 @@
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 
-from .compression_strategies import MzSingleStringDeltaCompressionIntensityHexSeparateBrotliUrl as MsMsUrlCompressor
-from .compression_strategies import MzSingleStringDeltaCompressionIntensityHexSeparateBrotliB85 as MsMsB85Compressor
+from .compressors import SpectrumCompressor, SpectrumCompressorUrl
+

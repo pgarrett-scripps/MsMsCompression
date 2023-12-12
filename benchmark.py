@@ -1,18 +1,19 @@
-import inspect
-
-import numpy as np
-
-from src import msms_compression
+from msms_compression import SpectrumCompressor, SpectrumCompressorUrl
 
 import urllib.parse
+import random
 
 
 def generate_random_data(size=100):
     """ Generate random mz and intensity values for testing """
-    mz_values = np.random.uniform(50, 1000, size).astype(np.float32)
-    mz_values.sort()
-    intensity_values = np.random.uniform(1, 100, size).astype(np.float32)
-    return list(mz_values), list(intensity_values)
+    mz_values = []
+    intensity_values = []
+
+    for i in range(size):
+        mz_values.append(random.random() * 1000)
+        intensity_values.append(random.random() * 1000)
+
+    return mz_values, intensity_values
 
 
 def calculate_compression_stats(original_data, compressed_data):
@@ -44,12 +45,5 @@ def test_compression(strategy, mz_values, intensity_values):
 # Generate random data
 mz_values, intensity_values = generate_random_data()
 
-# Test each compression strategy
-# Dynamically get all compression strategies from the module
-strategy_classes = [cls for name, cls in inspect.getmembers(msms_compression.compression_strategies)
-                    if inspect.isclass(cls) and issubclass(cls, BaseCompressionStrategy) and cls is not BaseCompressionStrategy]
-
-# Test each compression strategy
-for strategy_class in strategy_classes:
-    strategy = strategy_class()
+for strategy in [SpectrumCompressor(), SpectrumCompressorUrl()]:
     test_compression(strategy, mz_values, intensity_values)

@@ -1,5 +1,1 @@
-setuptools~=65.5.1
-numpy~=1.26.2
-pandas~=2.1.4
-serenipy~=0.2.6
-tqdm~=4.66.1
+brotli==1.1.0

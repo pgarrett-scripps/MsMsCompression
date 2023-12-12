@@ -1,6 +1,8 @@
 import struct
-import urllib
 from typing import Generator, List
+
+import brotli
+
 
 def leading_zero_compression(s: str, chunk_size=1000) -> str:
     compressed_chunks = []
@@ -9,6 +11,7 @@ def leading_zero_compression(s: str, chunk_size=1000) -> str:
         compressed_chunk = hex(int('1' + chunk))[2:]
         compressed_chunks.append(compressed_chunk)
     return ','.join(compressed_chunks)
+
 
 def leading_zero_decompression(s: str) -> str:
     decompressed_chunks = []
@@ -19,12 +22,10 @@ def leading_zero_decompression(s: str) -> str:
 
 
 def float_to_hex(f: float) -> str:
-    """Convert a floating point number to its hexadecimal representation."""
     return format(struct.unpack('!I', struct.pack('!f', f))[0], '08x')
 
 
 def hex_to_float(s: str) -> float:
-    """Convert a hexadecimal number to its floating-point representation."""
     return struct.unpack('!f', struct.pack('!I', int(s, 16)))[0]
 
 
@@ -40,24 +41,20 @@ def decode_leading_zero(lz: chr) -> int:
 
 
 def hex_delta(a: str, b: str) -> str:
-    """Calculate differences between adjacent hexadecimal values."""
     diff = int(a, 16) - int(b, 16)
     return format(diff & 0xFFFFFFFF, '08x')
 
 
 def hex_delta_rev(a: str, b: str) -> str:
-    """Calculate differences between adjacent hexadecimal values."""
     diff = int(a, 16) + int(b, 16)
     return format(diff & 0xFFFFFFFF, '08x')
 
 
 def count_leading_zeros(s: str) -> int:
-    """Count the number of leading zeros in each hexadecimal difference."""
     return len(s) - len(s.lstrip('0'))
 
 
 def delta_encode(vals: List[float]) -> (str, str):
-    """Encode a list of m/z values using a delta encoding scheme and return the encoded values."""
     mzs_hex = [float_to_hex(mz) for mz in vals]
 
     initial_hex_value = mzs_hex[0]
@@ -95,7 +92,6 @@ def delta_decode(delta_str: str, lz_str: str) -> Generator[float, None, None]:
 
 
 def delta_encode_single(vals: List[float], ints: List[float]) -> (str, str):
-    """Encode a list of m/z values using a delta encoding scheme and return the encoded values."""
     mzs_hex = [float_to_hex(mz) for mz in vals]
 
     initial_hex_value = mzs_hex[0]
@@ -147,11 +143,9 @@ def delta_decode_single(delta_str: str, lz_str: str) -> Generator[float, None, N
         delta_str = delta_str[8:]
         yield hex_to_float(int_hex)
 
+
 def delta_encode_single_string(vals: List[float]) -> str:
     hex_delta_str, leading_zero_str = delta_encode(vals)
-
-    # compressed_leading_zero_str = leading_zero_compression(leading_zero_str[::-1])
-    # print(len(compressed_leading_zero_str), len(leading_zero_str[::-1]))
 
     return hex_delta_str + leading_zero_str[::-1]
 
@@ -175,43 +169,6 @@ def delta_decode_single_string(s: str) -> Generator[float, None, None]:
         yield hex_to_float(hex)
 
 
-def delta_encode_single_string2(vals: List[float], ints: List[float]) -> str:
-    hex_delta_str, leading_zero_str = delta_encode_single(vals, ints)
-
-    # compressed_leading_zero_str = leading_zero_compression(leading_zero_str[::-1])
-    # print(len(compressed_leading_zero_str), len(leading_zero_str[::-1]))
-
-    return hex_delta_str + leading_zero_str[::-1]
-
-
-def delta_decode_single_string2(s: str) -> Generator[float, None, None]:
-
-    initial_lz = decode_leading_zero(s[-1])
-    initial_hex = '0' * initial_lz + s[:8 - initial_lz]
-    s = s[8 - initial_lz:-1]
-    yield hex_to_float(initial_hex)
-
-    yield hex_to_float(s[:8])
-    s = s[8:]
-
-    curr_value = initial_hex
-    while s:
-
-        lz = decode_leading_zero(s[-1])
-        hex_diff = '0' * lz + s[:8 - lz]
-
-        hex = hex_delta_rev(curr_value, hex_diff)
-        curr_value = hex
-
-        s = s[8 - lz:-1]
-
-        yield hex_to_float(hex)
-
-
-        yield hex_to_float(s[:8])
-        s = s[8:]
-
-
 def hex_encode(intensities: List[float]) -> str:
     intensities_hex = [float_to_hex(intensity) for intensity in intensities]
     return ''.join(intensities_hex)
@@ -225,30 +182,7 @@ def hex_decode(s: str) -> Generator[float, None, None]:
         yield intensity
 
 
-def url_encode_spectrum(mz_array: List[float], intensity_array: List[float]) -> str:
-    return urllib.parse.urlencode(
-        {'mz': delta_encode_single_string(mz_array),
-         'i': hex_encode(intensity_array)
-         }
-    )
-
-
-def dumb_encode_spectrum(mz_array: List[float], intensity_array: List[float]) -> str:
-    rounded_mzs = ''.join([str(round(mz, 4)) for mz in mz_array])
-    rounded_intensities = ''.join([str(round(intensity, 2)) for intensity in intensity_array])
-    return urllib.parse.urlencode(
-        {'mz': rounded_mzs,
-         'i': rounded_intensities
-         }
-    )
-
-
 def encode_indexes(indexes: List[int]) -> str:
-    """
-    Encode as a uint16 array
-    :param indexes:
-    :return:
-    """
     return ''.join([format(index, '04x') for index in indexes])
 
 
@@ -257,3 +191,13 @@ def decode_indexes(s: str) -> Generator[int, None, None]:
         index = int(s[:4], 16)
         s = s[4:]
         yield index
+
+
+def compress_string(string: str, encode_function) -> str:
+    compressed = brotli.compress(string.encode('utf-8'))
+    return encode_function(compressed).decode('utf-8')
+
+
+def decompress_string(string: str, decode_function) -> str:
+    decompressed = brotli.decompress(decode_function(string))
+    return decompressed.decode('utf-8')
