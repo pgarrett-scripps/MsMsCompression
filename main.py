@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from mangum import Mangum
 from pydantic import BaseModel
-from typing import List, Union
+from typing import List
 
 # Import your compression strategies
 from msms_compression import (
-    MsMsUrlCompressor,
-    MsMsB85Compressor,
+    SpectrumCompressor,
+    SpectrumCompressorUrl,
 )
 
 app = FastAPI()
@@ -23,7 +23,7 @@ class CompressedData(BaseModel):
 
 @app.post("/compress/url", status_code=200)
 def compress_url(data: SpectrumData):
-    compressor = MsMsUrlCompressor()
+    compressor = SpectrumCompressorUrl()
     try:
         compressed_data = compressor.compress(data.mzs, data.intensities)
         return {"compressed_data": compressed_data}
@@ -33,7 +33,7 @@ def compress_url(data: SpectrumData):
 
 @app.post("/decompress/url", status_code=200)
 def decompress_url(data: CompressedData):
-    compressor = MsMsUrlCompressor()
+    compressor = SpectrumCompressorUrl()
     try:
         mzs, intensities = compressor.decompress(data.compressed_data)
         return {"mzs": mzs, "intensities": intensities}
@@ -41,9 +41,9 @@ def decompress_url(data: CompressedData):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/compress/b85", status_code=200)
-def compress_b85(data: SpectrumData):
-    compressor = MsMsB85Compressor()
+@app.post("/compress", status_code=200)
+def compress(data: SpectrumData):
+    compressor = SpectrumCompressor()
     try:
         compressed_data = compressor.compress(data.mzs, data.intensities)
         return {"compressed_data": compressed_data}
@@ -51,9 +51,9 @@ def compress_b85(data: SpectrumData):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/decompress/b85", status_code=200)
-def decompress_b85(data: CompressedData):
-    compressor = MsMsB85Compressor()
+@app.post("/decompress", status_code=200)
+def decompress(data: CompressedData):
+    compressor = SpectrumCompressor()
     try:
         mzs, intensities = compressor.decompress(data.compressed_data)
         return {"mzs": mzs, "intensities": intensities}

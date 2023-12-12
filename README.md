@@ -8,7 +8,7 @@ algorithm, which is described in the following paper: https://doi.org/10.1186/s1
 
 ## Version
 
-0.1.0
+0.1.3
 
 ## Features
 
@@ -52,3 +52,14 @@ decompressed_mz, decompressed_intensity = compressor.decompress(compressed_data)
 assert decompressed_mz == mz_values
 assert decompressed_intensity == intensity_values
 ```
+
+# Compression Strategy Comparison
+
+| Strategy                  | Compression Ratio | Compression Ratio Rank | URL Compression Ratio | URL Compression Ratio Rank | Compression Time | Compression Time Rank | Decompression Time | Decompression Time Rank |
+|---------------------------|-------------------|------------------------|-----------------------|----------------------------|------------------|-----------------------|--------------------|-------------------------|
+| SpectrumCompressor        | 3.890             | 1                      | 3.299                 | 4                          | 0.081            | 5                     | 0.016              | 4                       |
+| SpectrumCompressorUrl     | 3.646             | 2                      | 4.528                 | 1                          | 0.074            | 4                     | 0.013              | 2                       |
+| SpectrumCompressorGzip    | 3.148             | 3                      | 2.658                 | 5                          | 0.032            | 2                     | 0.013              | 3                       |
+| SpectrumCompressorUrlGzip | 2.951             | 4                      | 3.665                 | 2                          | 0.031            | 1                     | 0.012              | 1                       |
+| SpectrumCompressorUrlLzstring | 2.800         | 5                      | 3.418                 | 3                          | 0.036            | 3                     | 0.170              | 5                       |
+

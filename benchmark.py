@@ -1,20 +1,18 @@
-from msms_compression import SpectrumCompressor, SpectrumCompressorUrl
+from msms_compression import SpectrumCompressor, SpectrumCompressorUrl, SpectrumCompressorGzip, SpectrumCompressorUrlGzip, SpectrumCompressorUrlLzstring
 
 import urllib.parse
 import random
 
-from msms_compression.compressors import SpectrumCompressorGzip, SpectrumCompressorUrlGzip, SpectrumCompressorLzstring, \
-    SpectrumCompressorUrlLzstring
-
-print(SpectrumCompressorUrl().compress([100.0, 200.0, 300.0], [10.0, 20.0, 30.0]))
-def generate_random_data(size=100):
+def generate_random_data(size=500):
     """ Generate random mz and intensity values for testing """
     mz_values = []
     intensity_values = []
 
     for i in range(size):
-        mz_values.append(random.random() * 1000)
-        intensity_values.append(random.random() * 1000)
+        mz_values.append(random.random() * 2000)
+        intensity_values.append(random.random() * 10_000)
+
+    mz_values.sort()
 
     return mz_values, intensity_values
 
