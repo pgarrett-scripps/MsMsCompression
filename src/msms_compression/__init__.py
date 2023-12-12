@@ -1,4 +1,4 @@
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
-from .compressors import SpectrumCompressor, SpectrumCompressorUrl
+from .compressors import SpectrumCompressor, SpectrumCompressorUrl, SpectrumCompressorGzip, SpectrumCompressorUrlGzip
 
