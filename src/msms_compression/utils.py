@@ -201,3 +201,69 @@ def compress_string(string: str, encode_function) -> str:
 def decompress_string(string: str, decode_function) -> str:
     decompressed = brotli.decompress(decode_function(string))
     return decompressed.decode('utf-8')
+
+
+def int_to_hex(value: int) -> str:
+    return '{:02x}'.format(value)
+
+
+def hex_to_int(hex_str: str) -> int:
+    return int(hex_str, 16)
+
+
+def scale_intensity(intensity, min_intensity, max_intensity, reverse=False):
+    if reverse:
+        # Reverse scaling from 0-1 back to original range
+        return intensity * (max_intensity - min_intensity) + min_intensity
+    else:
+        # Scale intensity to 0-1 range
+        return (intensity - min_intensity) / (max_intensity - min_intensity)
+
+
+def _hex_encode_lossy(intensities: List[float]) -> str:
+    min_intensity = min(intensities)
+    max_intensity = max(intensities)
+    intensities_hex = [
+        int_to_hex(int(scale_intensity(intensity, min_intensity, max_intensity) * 255))
+        for intensity in intensities
+    ]
+    return ''.join(intensities_hex)
+
+
+def _hex_decode_lossy(s: str, min_intensity: float, max_intensity: float) -> Generator[float, None, None]:
+    while s:
+        hex_str = s[:2]
+        intensity = scale_intensity(hex_to_int(hex_str) / 255, min_intensity, max_intensity, reverse=True)
+        s = s[2:]
+        yield intensity
+
+
+def hex_encode_lossy(intensities: List[float]) -> str:
+    if not intensities:
+        return ''
+
+    min_intensity = min(intensities)
+    max_intensity = max(intensities)
+
+    # Convert min and max intensities to hex and add them to the string
+    encoded_min_max = float_to_hex(min_intensity) + float_to_hex(max_intensity)
+
+    # Encode the rest of the intensities
+    encoded_intensities = _hex_encode_lossy(intensities)
+
+    return encoded_min_max + encoded_intensities
+
+
+def hex_decode_lossy(s: str) -> Generator[float, None, None]:
+    if not s:
+        return
+
+    # Extract and decode the min and max intensities
+    min_intensity_hex = s[:8]
+    max_intensity_hex = s[8:16]
+    min_intensity = hex_to_float(min_intensity_hex)
+    max_intensity = hex_to_float(max_intensity_hex)
+
+    # Decode the rest of the intensities
+    encoded_intensities = s[16:]
+    return _hex_decode_lossy(encoded_intensities, min_intensity, max_intensity)

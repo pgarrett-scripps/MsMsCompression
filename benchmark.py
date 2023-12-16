@@ -3,6 +3,9 @@ from msms_compression import SpectrumCompressor, SpectrumCompressorUrl, Spectrum
 import urllib.parse
 import random
 
+from msms_compression.compressors import SpectrumCompressorUrlLossy, SpectrumCompressorLossy
+
+
 def generate_random_data(size=500):
     """ Generate random mz and intensity values for testing """
     mz_values = []
@@ -49,7 +52,7 @@ mz_values, intensity_values = generate_random_data()
 
 for strategy in [SpectrumCompressor(), SpectrumCompressorUrl(),
                  SpectrumCompressorGzip(), SpectrumCompressorUrlGzip(),
-                 SpectrumCompressorUrlLzstring()]:
+                 SpectrumCompressorUrlLzstring(), SpectrumCompressorUrlLossy(),
+                 SpectrumCompressorLossy()]:
 
-    print(f"Testing {strategy.__class__.__name__}...")
     test_compression(strategy, mz_values, intensity_values)

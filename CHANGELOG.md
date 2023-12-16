@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0]
+
+### Added
+- lossy compression options
+
+## Changed
+- fixed issue when compressing empty strings
+
+
 ## [0.1.3]
 
 ### Added
