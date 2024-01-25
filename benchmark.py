@@ -1,9 +1,9 @@
-from msms_compression import SpectrumCompressor, SpectrumCompressorUrl, SpectrumCompressorGzip, SpectrumCompressorUrlGzip, SpectrumCompressorUrlLzstring
+from msms_compression import SpectrumCompressorF32, SpectrumCompressorF32Url, SpectrumCompressorGzip, SpectrumCompressorUrlGzip, SpectrumCompressorF32UrlLzstring
 
 import urllib.parse
 import random
 
-from msms_compression.compressors import SpectrumCompressorUrlLossy, SpectrumCompressorLossy
+from msms_compression.data_compressor import SpectrumCompressorF32UrlLossy, SpectrumCompressorF32Lossy
 
 
 def generate_random_data(size=500):
@@ -50,9 +50,9 @@ def test_compression(strategy, mz_values, intensity_values):
 # Generate random data
 mz_values, intensity_values = generate_random_data()
 
-for strategy in [SpectrumCompressor(), SpectrumCompressorUrl(),
+for strategy in [SpectrumCompressorF32(), SpectrumCompressorF32Url(),
                  SpectrumCompressorGzip(), SpectrumCompressorUrlGzip(),
-                 SpectrumCompressorUrlLzstring(), SpectrumCompressorUrlLossy(),
-                 SpectrumCompressorLossy()]:
+                 SpectrumCompressorF32UrlLzstring(), SpectrumCompressorF32UrlLossy(),
+                 SpectrumCompressorF32Lossy()]:
 
     test_compression(strategy, mz_values, intensity_values)

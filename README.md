@@ -35,13 +35,13 @@ The package includes the following main compressor classes:
 ### Example:
 
 ```python
-from msms_compression import SpectrumCompressor
+from msms_compression import SpectrumCompressorF32
 
 # Sample data
 mz_values, intensity_values = [100.0, 101.0, 102.0], [10.0, 20.0, 30.0]
 
 # Initialize the compressor
-compressor = SpectrumCompressor()
+compressor = SpectrumCompressorF32()
 
 # Compress data
 compressed_data = compressor.compress(mz_values, intensity_values)
